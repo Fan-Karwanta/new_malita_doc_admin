@@ -20,12 +20,11 @@ const UsersList = () => {
     const [statsModalVisible, setStatsModalVisible] = useState(false);
     const [selectedUserStats, setSelectedUserStats] = useState(null);
     const { aToken } = useContext(AdminContext);
-    const baseUrl = import.meta.env.VITE_BACKEND_URL || '';
 
     const fetchUsers = async () => {
         try {
             setLoading(true);
-            const response = await axios.get(`${baseUrl}/api/admin/users`, {
+            const response = await axios.get('/api/admin/users', {
                 headers: {
                     Authorization: `Bearer ${aToken}`
                 }
@@ -66,7 +65,7 @@ const UsersList = () => {
     const fetchAppointmentStats = async () => {
         try {
             setStatsLoading(true);
-            const response = await axios.get(`${baseUrl}/api/admin/users-appointment-stats`, {
+            const response = await axios.get('/api/admin/users-appointment-stats', {
                 headers: {
                     Authorization: `Bearer ${aToken}`
                 }
@@ -117,7 +116,7 @@ const UsersList = () => {
     const handleBlock = async () => {
         try {
             const response = await axios.put(
-                `${baseUrl}/api/admin/update-approval/${selectedUser._id}`, 
+                `/api/admin/update-approval/${selectedUser._id}`, 
                 { status: 'blocked' },
                 {
                     headers: {
@@ -143,7 +142,7 @@ const UsersList = () => {
     const handleDelete = async () => {
         try {
             const response = await axios.delete(
-                `${baseUrl}/api/admin/delete-user/${selectedUser._id}`,
+                `/api/admin/delete-user/${selectedUser._id}`,
                 {
                     headers: {
                         Authorization: `Bearer ${aToken}`
@@ -187,6 +186,24 @@ const UsersList = () => {
     };
 
     const columns = [
+        {
+            title: 'Profile',
+            dataIndex: 'image',
+            key: 'image',
+            render: (image) => (
+                image ? (
+                    <Tooltip title="View Profile Image">
+                        <Button 
+                            type="text" 
+                            icon={<img src={image} alt="Profile" style={{ width: '30px', height: '30px', borderRadius: '50%' }} />} 
+                            onClick={() => handlePreviewImage(image)}
+                        />
+                    </Tooltip>
+                ) : (
+                    <Typography.Text type="secondary">No Image</Typography.Text>
+                )
+            ),
+        },
         {
             title: 'First Name',
             dataIndex: 'firstName',
